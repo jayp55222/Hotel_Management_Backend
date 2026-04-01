@@ -1,10 +1,10 @@
-const {DataTypes } = require('sequelize'); 
-const sequelize=require("../config/db")
+const { DataTypes } = require('sequelize');
+const sequelize = require("../config/db")
 
-const superAdminSchema = sequelize.define('SuperAdmin', {
+const adminSchema = sequelize.define('Admin', {
   id: {
     type: DataTypes.UUID,
-    defaultValue:DataTypes.UUIDV4,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
   name: {
@@ -23,14 +23,14 @@ const superAdminSchema = sequelize.define('SuperAdmin', {
   role: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 'superAdmin',
+    defaultValue: 'admin',
   },
-  phoneNumber:{
-    type:DataTypes.STRING,
-    allowNull:true,
+  phoneNumber: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
-},{
-  timestamps:true,
+}, {
+  timestamps: true,
 });
 
-module.exports = superAdminSchema;
+module.exports = adminSchema;

@@ -1,13 +1,19 @@
-const superAdminSchema = require("../models/admin");
+const AdminSchema = require("../../models/admin");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const config = require("../config/config");
-const { successResponse, errorResponse } = require("../utils/responseFormat");
-const superAdminValidationSchema = require("../validation/superAdminValidation");
+const config = require("../../config/config");
+const { successResponse, errorResponse } = require("../../utils/responseFormat");
+// const superAdminValidationSchema = require("../validation/superAdminValidation"); 
+const superAdminValidationSchema = require("../../validation/adminValidation");
 const { Op } = require("sequelize");
 const JWT_SECRET = config.JWT_SECRET;
 
-const createSuperAdmin = async (req, res) => {
+/**
+ * @desc    Create Admin
+ * @route   GET /api/v1/courses
+ * @access  Public
+ */
+const createAdmin = async (req, res) => {
   try {
     const { error } = superAdminValidationSchema.validate(req.body, {
       abortEarly: false,
@@ -23,7 +29,7 @@ const createSuperAdmin = async (req, res) => {
     }
 
     const { name, email, password } = req.body;
-    const existingSuperAdmin = await superAdminSchema.findOne({
+    const existingSuperAdmin = await AdminSchema.findOne({
       where: { email },
     });
     if (existingSuperAdmin) {
@@ -36,7 +42,7 @@ const createSuperAdmin = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newSuperAdmin = await superAdminSchema.create({
+    const newSuperAdmin = await AdminSchema.create({
       name,
       email,
       password: hashedPassword,
@@ -54,11 +60,15 @@ const createSuperAdmin = async (req, res) => {
   }
 };
 
-const getAllSuperAdmins = async (req, res) => {
+/**
+ * @desc    Get All Admin
+ * @route   GET /api/v1/courses
+ * @access  Public
+ */
+const getAllAdmins = async (req, res) => {
   try {
-    const superAdmins = await superAdminSchema.findAll();
+    const superAdmins = await AdminSchema.findAll();
     if (!superAdmins.length) {
-      // return errorResponse(res, null, 'No SuperAdmins found.', 404);
       return successResponse(res, [], "No SuperAdmins found.", 200);
     }
 
@@ -74,10 +84,15 @@ const getAllSuperAdmins = async (req, res) => {
   }
 };
 
-const getSuperAdminById = async (req, res) => {
+/**
+ * @desc    Get Admin by Id
+ * @route   GET /api/v1/courses
+ * @access  Public
+ */
+const getAdminById = async (req, res) => {
   const { id } = req.params;
   try {
-    const superAdmin = await superAdminSchema.findByPk(id);
+    const superAdmin = await AdminSchema.findByPk(id);
     if (!superAdmin) {
       return errorResponse(res, null, "SuperAdmin not found.", 404);
     }
@@ -94,11 +109,16 @@ const getSuperAdminById = async (req, res) => {
   }
 };
 
-const updateSuperAdmin = async (req, res) => {
+/**
+ * @desc    Update Admin
+ * @route   GET /api/v1/courses
+ * @access  Public
+ */
+const updateAdmin = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const superAdmin = await superAdminSchema.findByPk(id);
+    const superAdmin = await AdminSchema.findByPk(id);
     if (!superAdmin) {
       return errorResponse(res, null, "SuperAdmin not found.", 404);
     }
@@ -138,10 +158,15 @@ const updateSuperAdmin = async (req, res) => {
   }
 };
 
-const deleteSuperAdmin = async (req, res) => {
+/**
+ * @desc    Delete Admin
+ * @route   GET /api/v1/courses
+ * @access  Public
+ */
+const deleteAdmin = async (req, res) => {
   const { id } = req.params;
   try {
-    const superAdmin = await superAdminSchema.findByPk(id);
+    const superAdmin = await AdminSchema.findByPk(id);
     if (!superAdmin) {
       return errorResponse(res, null, "SuperAdmin not found.", 404);
     }
@@ -162,7 +187,7 @@ const generateTokenForAdmin = async (req, res) => {
   }
 
   try {
-    const superAdmin = await superAdminSchema.findOne({ where: { email } });
+    const superAdmin = await AdminSchema.findOne({ where: { email } });
     if (!superAdmin) {
       return errorResponse(res, null, "SuperAdmin not found.", 404);
     }
@@ -186,7 +211,12 @@ const generateTokenForAdmin = async (req, res) => {
   }
 };
 
-const getPaginatedSuperAdmins = async (req, res) => {
+/**
+ * @desc    Get Paginated Admin
+ * @route   GET /api/v1/courses
+ * @access  Public
+ */
+const getPaginatedAdmins = async (req, res) => {
   const page = parseInt(req.query.page);
   const limit = parseInt(req.query.limit) || 10;
   const query = req.query.query;
@@ -213,7 +243,7 @@ const getPaginatedSuperAdmins = async (req, res) => {
   }
 
   try {
-    const { count, rows } = await superAdminSchema.findAndCountAll({
+    const { count, rows } = await AdminSchema.findAndCountAll({
       where: whereCondition,
       limit,
       offset,
@@ -244,11 +274,11 @@ const getPaginatedSuperAdmins = async (req, res) => {
 };
 
 module.exports = {
-  createSuperAdmin,
-  getAllSuperAdmins,
-  getSuperAdminById,
-  updateSuperAdmin,
-  deleteSuperAdmin,
+  createAdmin,
+  getAllAdmins,
+  getAdminById,
+  updateAdmin,
+  deleteAdmin,
   generateTokenForAdmin,
-  getPaginatedSuperAdmins,
+  getPaginatedAdmins,
 };

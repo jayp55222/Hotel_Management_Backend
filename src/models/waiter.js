@@ -32,7 +32,7 @@ const waiterSchema= sequelize.define('Waiter', {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-          model: 'superadmins',
+          model: 'admins',
           key: 'id',
     },
     },

@@ -1,16 +1,21 @@
 const express = require("express");
 const sequelize = require("./config/db");
 const config = require("./config/config");
-const jwt = require("jsonwebtoken");
-const routes = require("./routes");
+const routes = require("./routes/routeIndex");
 const cors = require("cors");
+// const validateLoginUser = require("./middleware/validateLoginUser");
+// const { RegisterController } = require("./controllers/common/create");
+// const validateRegisterUser = require("./middleware/validateRegisterUser");
+// const { LoginController } = require("./controllers/common/login");
+// const { LogoutController } = require("./controllers/common/logout");
+// const { verifyToken } = require("./middleware/Auth/authMiddleware");
+const cookieParser = require("cookie-parser");
 
-const { verifyToken, restrictToRole } = require("./middleware/authMiddleware");
+
 const app = express();
 const PORT = config.port;
-const JWT_SECRET = config.JWT_SECRET;
 
-
+app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -37,31 +42,8 @@ async function testConnection() {
 testConnection();
 
 app.use("/api", routes);
-// app.use("/users", (req, res) => {
-//   const fullUrl = `${req.}://${req.get("host")}${req.originalUrl}`;
-//   console.log(fullUrl);
 
-//   res.send("OK");
-// });
-
-app.use((req, res) => {
-  res.status(404).json({ message: "Route not found." });
-});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-//First Point
-// response Formate
-// json:{
-//   status:"success" // if success or else error,
-//   message:"add a success message according to api",// for example data fetched successfully, user registered successfully etc.
-//   data:[{}]
-// }
-
-// second point
-// => R&D on bcrypt
-// => apply bcrypt on all the password fields
-
-// use multer to add image // suggestions
